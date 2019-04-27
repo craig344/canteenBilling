@@ -12,7 +12,7 @@
   <h1>View and edit menu</h1>
   <hr>
   <p>Here you can view and make changes to your menu</p>
-  <table class="table table-hover">
+  <table class="table table-hover" id="menu">
     <thead>
       <tr>
         <th>Item Name</th>
@@ -20,17 +20,31 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Chicken Biryani</td>
-        <td>90</td>
-      </tr>
+
     </tbody>
   </table>
+  <button type="button" class="btn btn-primary">Add Item</button>
   <script>
     $("#dash").on('click', function (event) {
       $("#content-wrapper").load("./dashboard.html");
     });
-    console.log("Load from and submit stuff to db from here...");
+
+    window.onloadend = loaditems();
+
+    function loaditems(){
+      var table = $("#menu tbody");
+      var arr1 = ["chicken biryani", "Chicken Thali", "Veg Thali"];
+      var arr2 = ["90", "80", "70"];
+      for(var i = 0; i < arr1.length; i++){
+        table.append(
+          "<tr id = '"+i+"'>\n"+
+            "<td>"+arr1[i]+"</td>\n"+
+            "<td>"+arr2[i]+"<td>\n"+
+          "</tr>\n"
+        );
+      }
+
+    }
 
 
   </script>
