@@ -3,9 +3,9 @@
     <!-- Breadcrumbs-->
     <ol class="breadcrumb">
         <li class="breadcrumb-item">
-            <a href="index.html">Bill</a>
+            <a href="#" id="dash">Dashboard</a>
         </li>
-        <li class="breadcrumb-item active">Blank Page</li>
+        <li class="breadcrumb-item active">Billing</li>
     </ol>
 
     <!-- Page Content -->
@@ -13,6 +13,9 @@
     <hr>
     <p>This is a great starting point for new custom pages.</p>
     <script>
+        $("#dash").on('click', function (event) {
+      $("#content-wrapper").load("./dashboard.html");
+    });
         console.log("bill script running.....");
         
     </script>
