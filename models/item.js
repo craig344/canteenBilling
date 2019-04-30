@@ -80,7 +80,6 @@ var item = {
                 return callback(response);
             }
         });
-
     },
     update: function (item, callback) {     
 

@@ -1,23 +1,73 @@
 <div class="container-fluid">
-
-    <!-- Breadcrumbs-->
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="#" id="dash">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item active">Billing</li>
-    </ol>
-
     <!-- Page Content -->
     <h1>Bill Page</h1>
     <hr>
     <p>This is a great starting point for new custom pages.</p>
     <script>
-        $("#dash").on('click', function (event) {
-      $("#content-wrapper").load("./dashboard.html");
-    });
+
         console.log("bill script running.....");
-        
+
+        /*----------------SAMPLE CODES-------------*/
+        /* sample code on how to insert order*/
+        /*const orderModel = require('./../models/orders');
+        var order = {
+         total:'0',
+         item_count:'0'
+        };
+   
+        orderModel.create(order, function (response) {
+          console.log(response);
+        });*/
+
+        /*--- sample code on get all orders*/
+        /*const orderModel = require('./../models/orders');
+        orderModel.getAll(function (response) {
+            console.log(response);
+        });*/
+
+        /*--- sample code on get data by order id*/
+        /*const orderModel = require('./../models/orders');
+        order = {
+            id: '1'
+        }
+        orderModel.getbyId(order, function (response) {
+            console.log(response);
+        });*/
+
+
+        /* sample code on how to insert order ITEM*/
+       /* const orderItemModel = require('./../models/order_items');
+        var order_item = {
+            order_id: '1',
+            item_id: '2',
+            quantity: '1',
+            rate: '45'
+        };
+        orderItemModel.create(order_item, function (response) {
+            console.log(response);
+        });*/
+
+        /* sample code on how to insert order ITEMS in BULK*/
+       /* const orderItemModel = require('./../models/order_items');
+        let order_items_arr = [];
+        var order_item1 = {
+            order_id: '1',
+            item_id: '4',
+            quantity: '1',
+            rate: '45'
+        };
+        var order_item2 = {
+            order_id: '1',
+            item_id: '3',
+            quantity: '1',
+            rate: '50'
+        };
+        order_items_arr.push(order_item1);
+        order_items_arr.push(order_item2);
+        orderItemModel.createMultiple(order_items_arr, function (response) {
+            console.log(response);
+        });*/
+
     </script>
 </div>
 <!-- /.container-fluid -->
