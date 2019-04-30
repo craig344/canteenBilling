@@ -31,20 +31,75 @@
 
     window.onloadend = loaditems();
 
-    function loaditems(){
+    function loaditems() {
       var table = $("#menu tbody");
       var arr1 = ["chicken biryani", "Chicken Thali", "Veg Thali"];
       var arr2 = ["90", "80", "70"];
-      for(var i = 0; i < arr1.length; i++){
+      for (var i = 0; i < arr1.length; i++) {
         table.append(
-          "<tr id = '"+i+"'>\n"+
-            "<td>"+arr1[i]+"</td>\n"+
-            "<td>"+arr2[i]+"<span class=\"badge badge-pill badge-danger float-right\">X</span></td>\n"+
+          "<tr id = '" + i + "'>\n" +
+          "<td>" + arr1[i] + "</td>\n" +
+          "<td>" + arr2[i] + "<span class=\"badge badge-pill badge-danger float-right\">X</span></td>\n" +
           "</tr>\n"
         );
       }
 
     }
+
+    /*----------------SAMPLE CODES-------------*/
+    /* sample code on how to insert item*/
+    /* const itemModel = require('./../models/item');
+     var item = {
+       name: 'veg thali',
+       description: 'veggies & rice',
+       price: '45',
+       category: 'veg,thali'
+     };
+
+     itemModel.create(item, function (response) {
+       console.log(response);
+     });*/
+
+    /*--- sample code on get all users*/
+    /* const itemModel = require('./../models/item');
+     itemModel.getAll(function (response) {
+          console.log(response);
+      });*/
+
+    /*--- sample code on get data by item id*/
+    /*const itemModel = require('./../models/item');
+    item = {
+      id: '1'
+    }
+    itemModel.getbyId(item, function (response) {
+      console.log(response);
+    });*/
+
+    /*--- sample code to update data by item id*/
+    /*const itemModel = require('./../models/item');
+    item = {
+      id: '1',
+      name: 'fish thali',
+      description: 'fishes & rice',
+      price: '50',
+      category: 'fish,thali',
+      status:'active'
+    }
+    itemModel.update(item, function (response) {
+      console.log(response);
+    });*/
+
+    /*--- sample code to delete user by user id*/
+    /*const itemModel = require('./../models/item');
+    item = {
+      id: '1'
+    }
+    itemModel.deletebyId(item, function (response) {
+      console.log(response);
+    });*/
+
+
+
 
 
   </script>
