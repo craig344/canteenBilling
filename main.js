@@ -68,11 +68,10 @@ ipcMain.on('item:add', function (event, item) {
 
 
 //catch item:login
-ipcMain.on('item:login', function (event, item) {
-   if(user.login(item.username,item.password)){   
+ipcMain.on('item:login', function (event, item) {   
     createDashWindow();
     mainWindow.close();       
-   }   
+      
 });
 
 //create menu template

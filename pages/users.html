@@ -12,37 +12,87 @@
     <h1>Users Page</h1>
     <hr>
     <p>This is a great starting point for new custom pages.</p>
-    
+
     <form class="" onSubmit="">
-    <div>
-     <label class=""> User Name </label>
-     <input type="text" id="name" placeholder="Enter user name" name="name" />
-    </div>
-    
-    <div>
-     <label class=""> User Password </label>
-     <input type="password" id="password" placeholder="Enter user password" name="password" />
-    </div>
-       
-    <div>
-     <label class=""> Email Address </label>
-     <input type="email" id="email" placeholder="Enter user email address" name="email" />
-    </div>
+        <div>
+            <label class=""> User Name </label>
+            <input type="text" id="name" placeholder="Enter user name" name="name" />
+        </div>
 
-    <div>
-     <label class=""> Phone Number </label>
-     <input type="email" id="number" placeholder="Enter user phone number" name="number" />
-    </div>
+        <div>
+            <label class=""> User Password </label>
+            <input type="password" id="password" placeholder="Enter user password" name="password" />
+        </div>
 
-    <div>
-     <button class=""> Submit </button>
-    </div>
+        <div>
+            <label class=""> Email Address </label>
+            <input type="email" id="email" placeholder="Enter user email address" name="email" />
+        </div>
+
+        <div>
+            <label class=""> Phone Number </label>
+            <input type="email" id="number" placeholder="Enter user phone number" name="number" />
+        </div>
+
+        <div>
+            <button class=""> Submit </button>
+        </div>
     </form>
 
     <script>
         console.log("bill script running.....");
+
+        /* sample code on how to insert user*/
+        /* const userModel = require('./../models/user');
+         var user = {
+             name:'user 03',
+             phone: '45678912',
+             password: 'pass12345'
+         };
+
+         userModel.create(user, function (response) {
+            console.log(response);
+         });*/
+
+        /*--- sample code on get all users*/
+        /* const userModel = require('./../models/user');
+         userModel.getAll(function (response) {
+             console.log(response);
+         });*/
+
+        /*--- sample code on get data by user id*/
+        /* const userModel = require('./../models/user');
+         user = {
+             id:'1'
+         }
+         userModel.getbyId(user,function (response) {
+             console.log(response);
+         });*/
+
+        /*--- sample code to update data by user id*/
+        /*const userModel = require('./../models/user');
+         user = {
+             id:'1',
+             name:'up user2',
+             phone:'5556664441',
+             role:'clerk2',
+             password:'admin123'
+         }
+         userModel.update(user,function (response) {
+             console.log(response);
+         });*/
+
+         /*--- sample code to delete user by user id*/
         const userModel = require('./../models/user');
-        
+        user = {
+             id:'1'
+         }
+         userModel.deletebyId(user,function (response) {
+             console.log(response);
+         });
+
+
+
     </script>
 </div>
 <!-- /.container-fluid -->

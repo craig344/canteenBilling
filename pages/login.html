@@ -28,15 +28,15 @@
                 <form>
                     <div class="form-group">
                         <div class="form-label-group">
-                            <input type="username" id="inputUserName" class="form-control" placeholder="Username"
-                                required="required" autofocus="autofocus">
+                            <input type="username" id="inputUserName" class="form-control" placeholder="Phone"
+                                required="required" autofocus="autofocus" value="123456789">
                             <label for="inputUserName">Username</label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="form-label-group">
                             <input type="password" id="inputPassword" class="form-control" placeholder="Password"
-                                required="required">
+                                required="required" value="pass12345">
                             <label for="inputPassword">Password</label>
                         </div>
                     </div>
@@ -60,13 +60,35 @@
 
         const btn_login = document.querySelector('#btn-login');
 
+
         btn_login.addEventListener('click', function (event) {
-            event.preventDefault();            
-            const item = {
-                username: document.querySelector('#inputUserName').value,
-                password: document.querySelector('#inputPassword').value
+            event.preventDefault();
+            const txt_username = document.querySelector('#inputUserName');
+            const txt_password = document.querySelector('#inputPassword');
+            var user = {
+                phone: txt_username.value,
+                password: txt_password.value
             };
-            ipcRenderer.send('item:login', item);
+            console.log(user);
+
+            const userModel = require('./../models/user');
+            userModel.login(user, function (response) {
+                console.log(response);
+                if (response.success) {
+                   
+                     const item = {
+                        username: document.querySelector('#inputUserName').value,
+                        password: document.querySelector('#inputPassword').value
+                     };
+                     ipcRenderer.send('item:login', item);
+                    console.log("success");
+                    
+                }
+
+            });
+
+
+
         });
 
     </script>
