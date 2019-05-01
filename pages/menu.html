@@ -18,7 +18,11 @@
       <tr>
         <th id="name"><a href="#">Item Name</a></th>
         <th>Description</th>
-        <th>Category</th>
+        <th>
+          <select class="form-control-sm" id="category-select" name="category">
+            <option value="">Category</option>
+          </select>
+        </th>
         <th id="price"><a href="#">Price</a></th>
       </tr>
     </thead>
@@ -141,6 +145,7 @@
     window.onloadend = loaditems();
     function loaditems() {
       var table = $("#menu tbody");
+      var category = $("#category-select");
 
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
@@ -153,12 +158,22 @@
             "<td>" + response.data.items[i].price + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
             "</tr>\n"
           );
+          category.append(
+            "<option value='" + response.data.items[i].category + "'>" + response.data.items[i].category + "</option>\n"
+          );
         }
       });
     }
 
     $(document).ready(function () {
       $("#search").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#menu tbody tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+
+      $("#category-select").on("change", function () {
         var value = $(this).val().toLowerCase();
         $("#menu tbody tr").filter(function () {
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
