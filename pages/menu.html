@@ -8,8 +8,10 @@
   <table class="table table-hover" id="menu">
     <thead>
       <tr>
-        <th>Item Name</th>
-        <th>Price</th>
+        <th id="name"><a href="#">Item Name</a></th>
+        <th>Description</th>
+        <th>Category</th>
+        <th id="price"><a href="#">Price</a></th>
       </tr>
     </thead>
     <tbody>
@@ -18,24 +20,129 @@
   </table>
   <button type="button" class="btn btn-primary">Add Item</button>
   <script>
+
+    /**
+     * jQuery.fn.sortElements
+     * --------------
+     * @author James Padolsey (http://james.padolsey.com)
+     * @version 0.11
+     * @updated 18-MAR-2010
+     * --------------
+     * @param Function comparator:
+     *   Exactly the same behaviour as [1,2,3].sort(comparator)
+     *   
+     * @param Function getSortable
+     *   A function that should return the element that is
+     *   to be sorted. The comparator will run on the
+     *   current collection, but you may want the actual
+     *   resulting sort to occur on a parent or another
+     *   associated element.
+     *   
+     *   E.g. $('td').sortElements(comparator, function(){
+     *      return this.parentNode; 
+     *   })
+     *   
+     *   The <td>'s parent (<tr>) will be sorted instead
+     *   of the <td> itself.
+     */
+    jQuery.fn.sortElements = (function () {
+
+      var sort = [].sort;
+
+      return function (comparator, getSortable) {
+
+        getSortable = getSortable || function () { return this; };
+
+        var placements = this.map(function () {
+
+          var sortElement = getSortable.call(this),
+            parentNode = sortElement.parentNode,
+
+            // Since the element itself will change position, we have
+            // to have some way of storing it's original position in
+            // the DOM. The easiest way is to have a 'flag' node:
+            nextSibling = parentNode.insertBefore(
+              document.createTextNode(''),
+              sortElement.nextSibling
+            );
+
+          return function () {
+
+            if (parentNode === this) {
+              throw new Error(
+                "You can't sort elements if any one is a descendant of another."
+              );
+            }
+
+            // Insert before flag:
+            parentNode.insertBefore(this, nextSibling);
+            // Remove flag:
+            parentNode.removeChild(nextSibling);
+
+          };
+
+        });
+
+        return sort.call(this, comparator).each(function (i) {
+          placements[i].call(getSortable.call(this));
+        });
+
+      };
+
+    })();
+
     $("#dash").on('click', function (event) {
       $("#content-wrapper").load("./dashboard.html");
     });
 
-    window.onloadend = loaditems();
+    var table = $('table');
+    
+    $('#name, #price')
+        .wrapInner('<span title="sort according to this column"/>')
+        .each(function(){
+            
+            var th = $(this),
+                thIndex = th.index(),
+                inverse = false;
+            
+            th.click(function(){
+                
+                table.find('td').filter(function(){
+                    
+                    return $(this).index() === thIndex;
+                    
+                }).sortElements(function(a, b){
+                    
+                    return $.text([a]) > $.text([b]) ?
+                        inverse ? -1 : 1
+                        : inverse ? 1 : -1;
+                    
+                }, function(){
+                    
+                    // parentNode is the element we want to move
+                    return this.parentNode; 
+                    
+                });
+                
+                inverse = !inverse;
+                    
+            });
+                
+        });
 
+    window.onloadend = loaditems();
     function loaditems() {
       var table = $("#menu tbody");
-      var arr1 = ["chicken biryani", "Chicken Thali", "Veg Thali"];
-      var arr2 = ["90", "80", "70"];
 
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
-        for (var i = 0; i < arr1.length; i++) {
+        for (var i = 0; i < response.data.items.length; i++) {
           table.append(
             "<tr id = '" + response.data.items[i].id + "'>\n" +
             "<td>" + response.data.items[i].name + "</td>\n" +
-            "<td>" + response.data.items[i].price + "<span class=\"badge badge-pill badge-danger float-right\">X</span></td>\n" +
+            "<td>" + response.data.items[i].description + "</td>\n" +
+            "<td>" + response.data.items[i].category + "</td>\n" +
+            "<td>" + response.data.items[i].price + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
             "</tr>\n"
           );
         }
