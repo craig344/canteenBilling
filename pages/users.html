@@ -13,31 +13,28 @@
     <hr>
     <p>This is a great starting point for new custom pages.</p>
 
-    <form class="" onSubmit="">
-        <div>
-            <label class=""> User Name </label>
-            <input type="text" id="name" placeholder="Enter user name" name="name" />
-        </div>
+    <div class="input-group mb-3">
 
-        <div>
-            <label class=""> User Password </label>
-            <input type="password" id="password" placeholder="Enter user password" name="password" />
+        <input type="text" class="form-control" placeholder="Search" id="search">
+        <div class="input-group-append">
+          <span class="input-group-text">&#x1F50D;</span>
         </div>
-
-        <div>
-            <label class=""> Email Address </label>
-            <input type="email" id="email" placeholder="Enter user email address" name="email" />
-        </div>
-
-        <div>
-            <label class=""> Phone Number </label>
-            <input type="email" id="number" placeholder="Enter user phone number" name="number" />
-        </div>
-
-        <div>
-            <button class=""> Submit </button>
-        </div>
-    </form>
+      </div>
+    
+      <table class="table table-hover" id="user">
+        <thead>
+          <tr>
+            <th id="name"><a href="#">User Name</a></th>
+            <th>Password</th>
+            <th>Phone Number</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+    
+        </tbody>
+      </table>
+      <a href="add_user.html" class="btn btn-primary">Add User </a>
 
     <script>
         console.log("bill script running.....");
@@ -90,6 +87,119 @@
          userModel.deletebyId(user,function (response) {
              console.log(response);
          });*/
+
+jQuery.fn.sortElements = (function () {
+
+var sort = [].sort;
+
+return function (comparator, getSortable) {
+
+  getSortable = getSortable || function () { return this; };
+
+  var placements = this.map(function () {
+
+    var sortElement = getSortable.call(this),
+      parentNode = sortElement.parentNode,
+
+      // Since the element itself will change position, we have
+      // to have some way of storing it's original position in
+      // the DOM. The easiest way is to have a 'flag' node:
+      nextSibling = parentNode.insertBefore(
+        document.createTextNode(''),
+        sortElement.nextSibling
+      );
+
+    return function () {
+
+      if (parentNode === this) {
+        throw new Error(
+          "You can't sort elements if any one is a descendant of another."
+        );
+      }
+
+      // Insert before flag:
+      parentNode.insertBefore(this, nextSibling);
+      // Remove flag:
+      parentNode.removeChild(nextSibling);
+
+    };
+
+  });
+
+  return sort.call(this, comparator).each(function (i) {
+    placements[i].call(getSortable.call(this));
+  });
+
+};
+
+})();
+
+$("#dash").on('click', function (event) {
+$("#content-wrapper").load("./dashboard.html");
+});
+
+var table = $('table');
+
+$('#name, #price')
+.wrapInner('<span title="sort according to this column"/>')
+.each(function () {
+
+  var th = $(this),
+    thIndex = th.index(),
+    inverse = false;
+
+  th.click(function () {
+
+    table.find('td').filter(function () {
+
+      return $(this).index() === thIndex;
+
+    }).sortElements(function (a, b) {
+
+      return $.text([a]) > $.text([b]) ?
+        inverse ? -1 : 1
+        : inverse ? 1 : -1;
+
+    }, function () {
+
+      // parentNode is the element we want to move
+      return this.parentNode;
+
+    });
+
+    inverse = !inverse;
+
+  });
+
+});
+
+window.onloadend = loadusers();
+function loadusers() {
+var table = $("#user tbody");
+
+const userModel = require('./../models/user');
+userModel.getAll(function (response) {
+  for (var i = 0; i < response.data.users.length; i++) {
+    table.append(
+      "<tr id = '" + response.data.users[i].id + "'>\n" +
+      "<td>" + response.data.users[i].name + "</td>\n" +
+      "<td>" + response.data.users[i].passwordHash + "</td>\n" +
+      "<td>" + response.data.users[i].phone + "</td>\n" +
+      "<td>" + response.data.users[i].role + "</td>\n" +
+      "</tr>\n"
+    );
+  }
+});
+}
+
+$(document).ready(function () {
+$("#search").on("keyup", function () {
+  var value = $(this).val().toLowerCase();
+  $("#user tbody tr").filter(function () {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
+});
+});
 
 
     </script>
