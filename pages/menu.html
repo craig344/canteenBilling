@@ -28,17 +28,17 @@
       var table = $("#menu tbody");
       var arr1 = ["chicken biryani", "Chicken Thali", "Veg Thali"];
       var arr2 = ["90", "80", "70"];
-      for (var i = 0; i < arr1.length; i++) {
-        table.append(
-          "<tr id = '" + i + "'>\n" +
-          "<td>" + arr1[i] + "</td>\n" +
-          "<td>" + arr2[i] + "<span class=\"badge badge-pill badge-danger float-right\">X</span></td>\n" +
-          "</tr>\n"
-        );
-      }
+
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
-        console.log(response);
+        for (var i = 0; i < arr1.length; i++) {
+          table.append(
+            "<tr id = '" + response.data.items[i].id + "'>\n" +
+            "<td>" + response.data.items[i].name + "</td>\n" +
+            "<td>" + response.data.items[i].price + "<span class=\"badge badge-pill badge-danger float-right\">X</span></td>\n" +
+            "</tr>\n"
+          );
+        }
       });
     }
 
