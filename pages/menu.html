@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  
+
   <!-- Page Content -->
   <h1>View and edit menu</h1>
   <hr>
@@ -36,7 +36,10 @@
           "</tr>\n"
         );
       }
-
+      const itemModel = require('./../models/item');
+      itemModel.getAll(function (response) {
+        console.log(response);
+      });
     }
 
     /*----------------SAMPLE CODES-------------*/
