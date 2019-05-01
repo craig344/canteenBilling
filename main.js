@@ -14,6 +14,10 @@ let dashboardWindow;
 
 //Listen for app ready
 app.on('ready', function () {
+    createMainWindow();
+});
+
+function createMainWindow() {
     //create new window
     mainWindow = new BrowserWindow({});
     //Load html into window
@@ -23,8 +27,8 @@ app.on('ready', function () {
         protocol: 'file:',
         slashes: true
     }));
-    
-   
+
+
     mainWindow.maximize();
 
 
@@ -33,13 +37,13 @@ app.on('ready', function () {
 
     //Insert menu
     Menu.setApplicationMenu(mainMenu);
-});
+}
 
 //Handle createAddWindow
 function createDashWindow() {
     //create new window
-    dashboardWindow = new BrowserWindow({       
-        title: 'Add Shopping List Item'    
+    dashboardWindow = new BrowserWindow({
+        title: 'Add Shopping List Item'
     });
     //Load html into window
 
@@ -50,9 +54,9 @@ function createDashWindow() {
     }));
     dashboardWindow.maximize();
 
-     //Quit app when closed
-     dashboardWindow.on('closed', function () {
-        app.quit();
+    //Quit app when closed
+    dashboardWindow.on('closed', function () {
+       // app.quit();
     });
     //Garbage collection handle
     dashboardWindow.on('close', function () {
@@ -68,10 +72,16 @@ ipcMain.on('item:add', function (event, item) {
 
 
 //catch item:login
-ipcMain.on('item:login', function (event, item) {   
+ipcMain.on('item:login', function (event, item) {
     createDashWindow();
-    mainWindow.close();       
-      
+    mainWindow.close();
+
+});
+//catch item:logout
+ipcMain.on('item:logout', function (event, item) {
+    createMainWindow();
+    dashboardWindow.close();
+
 });
 
 //create menu template

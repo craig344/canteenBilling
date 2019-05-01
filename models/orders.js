@@ -80,6 +80,30 @@ var orders = {
                 return callback(response);
             }
         });
+    },
+    getOrderDetailsbyId: function (order, callback) {
+        let sql = 'SELECT orders.id,orders.created_at,orders.total,order_items.quantity,order_items.rate,item.name FROM orders join order_items join item ON orders.id = order_items.order_id AND item.id = order_items.item_id where orders.id =?';
+        let query = db.query(sql, [order.id], (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                let response = {
+                    success: false,
+                    error: {
+                        msg: "No order Found"
+                    }
+                }
+                return callback(response);
+            } else {
+                let response = {
+                    success: true,
+                    data: {
+                        msg: "order found.",
+                        item: result
+                    }
+                }
+                return callback(response);
+            }
+        });
     }
 
 }

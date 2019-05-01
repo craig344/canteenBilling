@@ -1,0 +1,115 @@
+<div class="container-fluid">
+
+    <!-- Page Content -->
+    <h1>History Page</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" id="txt_order_id" class="form-control" placeholder="Order Id">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" id="btn-search" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" id="order_details_card" style="display: none;">
+                <div class="card-body">
+                    <h4 class="card-title">Order Details</h4>
+                    <p class="card-text">ID: <span id="data-id"></span></p>
+                    <p class="card-text">Date: <span id="data-date"></span></p>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ord_items">
+                        </tbody>
+                        <tfoot>
+                            <th colspan="2">Total</th>
+                            <th colspan="3" style="text-align: right;" id="ord_total"></th>
+                        </tfoot>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="card bg-danger text-white" id="order_details_error" style="display:none;">
+                <div class="card-body">Order Not Found</div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $("#btn-search").on('click', function (event) {
+            $("#order_details_card").hide();
+            $("#order_details_error").hide();
+
+            let order_id = $("#txt_order_id").val();
+            const orderModel = require('./../models/orders');
+            order = {
+                id: order_id
+            }
+            orderModel.getOrderDetailsbyId(order, function (response) {
+
+                if (response.success) {
+                    let orderDetails = response.data.item[0];
+
+                    let d = new Date(orderDetails.created_at);
+                    let dateValue = d.getDate() + '-' + d.getMonth() + '-' + d.getFullYear();
+
+                    $("#data-id").text(orderDetails.id);
+                    $("#data-date").text(dateValue);
+                    $("#ord_total").text(orderDetails.total);
+
+                  
+                    
+                    let items = response.data.item;
+                    let count = 0;
+
+                    $("#ord_items").html('');
+
+                    items.forEach(element => {
+                        let tr = document.createElement('tr');
+                        let td_count = document.createElement('td');
+                        let td_item = document.createElement('td');
+                        let td_price = document.createElement('td');
+                        let td_qty = document.createElement('td');
+                        let td_total = document.createElement('td');
+
+                        tr.append(td_count);
+                        tr.append(td_item);
+                        tr.append(td_qty);
+                        tr.append(td_price);
+                        tr.append(td_total);
+
+                        td_count.textContent = ++count;
+                        td_item.textContent = element.name;
+                        td_qty.textContent = element.quantity;
+                        td_price.textContent = element.rate;
+                        td_total.textContent = element.rate * element.quantity;
+
+                        $("#ord_items").append(tr);
+                        $("#order_details_card").show();
+                    });
+                } else {
+                    $("#order_details_error").show()
+                }
+
+            });
+        });
+
+    </script>
+</div>
+<!-- /.container-fluid -->
