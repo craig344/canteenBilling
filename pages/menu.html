@@ -146,6 +146,7 @@
     function loaditems() {
       var table = $("#menu tbody");
       var category = $("#category-select");
+      var cat, categories = [], catCount = 0;
 
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
@@ -158,8 +159,31 @@
             "<td>" + response.data.items[i].price + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
             "</tr>\n"
           );
+          cat = response.data.items[i].category.split(",");
+          if (catCount == 0) {
+            for (var j = 0; j < cat.length; j++) {
+              categories[catCount] = cat[j];
+              catCount++;
+            }
+          } else {
+            for (var j = 0; j < cat.length; j++) {
+              var isPresent = false;
+              for (var k = 0; k < catCount; k++) {
+                if (cat[j] == categories[k]) {
+                  isPresent = true;
+                  break;
+                }
+              }
+              if (!isPresent) {
+                categories[catCount] = cat[j];
+                catCount++;
+              }
+            }
+          }
+        }
+        for(var i = 0; i<catCount; i++){
           category.append(
-            "<option value='" + response.data.items[i].category + "'>" + response.data.items[i].category + "</option>\n"
+            "<option value='" + categories[i] + "'>" + categories[i] + "</option>\n"
           );
         }
       });
