@@ -40,7 +40,7 @@ function createMainWindow() {
 }
 
 //Handle createAddWindow
-function createDashWindow() {
+function createDashWindow(item) {
     //create new window
     dashboardWindow = new BrowserWindow({
         title: 'Add Shopping List Item'
@@ -53,7 +53,9 @@ function createDashWindow() {
         slashes: true
     }));
     dashboardWindow.maximize();
-
+    dashboardWindow.webContents.on('did-finish-load', () => {
+        dashboardWindow.webContents.send('data', item)
+      })
     //Quit app when closed
     dashboardWindow.on('closed', function () {
        // app.quit();
@@ -73,7 +75,7 @@ ipcMain.on('item:add', function (event, item) {
 
 //catch item:login
 ipcMain.on('item:login', function (event, item) {
-    createDashWindow();
+    createDashWindow(item);
     mainWindow.close();
 
 });

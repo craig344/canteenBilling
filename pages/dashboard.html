@@ -7,7 +7,7 @@
             <a class="nav-link active" href="#total_chart_div" role="tab" id="salesTabLink" data-toggle="tab">Total Sales</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#item_chart_div" role="tab" data-toggle="tab">Item Sales</a>
+            <a class="nav-link" id="itemSaleslnk" href="#item_chart_div" role="tab" data-toggle="tab">Item Sales</a>
         </li>
     </ul>
 
@@ -83,7 +83,8 @@
             dateFormat: "yy-mm-dd",
             defaultDate: +0
         });
-        $("#item_chart_div").on('load', function () {
+        
+        $("#itemSaleslnk").on('click', function () {            
             const itemModel = require('./../models/item');
             itemModel.getAll(function (response) {
                 console.log(response);
@@ -94,8 +95,6 @@
 
             });
         });
-
-
         $("#generateChart").on('click', function (event) {
             event.preventDefault();
             $("#chart_error").hide();

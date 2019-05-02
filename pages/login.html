@@ -58,8 +58,8 @@
         const electron = require('electron');
         const { ipcRenderer } = electron;
 
-        const btn_login = document.querySelector('#btn-login');
-
+        const btn_login = document.querySelector('#btn-login');      
+        
 
         btn_login.addEventListener('click', function (event) {
             event.preventDefault();
@@ -69,20 +69,18 @@
                 phone: txt_username.value,
                 password: txt_password.value
             };
-            console.log(user);
-
             const userModel = require('./../models/user');
             userModel.login(user, function (response) {
                 console.log(response);
                 if (response.success) {
-                   
-                     const item = {
-                        username: document.querySelector('#inputUserName').value,
-                        password: document.querySelector('#inputPassword').value
-                     };
-                     ipcRenderer.send('item:login', item);
+
+                    const item = {
+                        username: response.data.user[0].name,
+                        role: response.data.user[0].role
+                    };
+                    ipcRenderer.send('item:login', item);
                     console.log("success");
-                    
+
                 }
 
             });

@@ -32,7 +32,7 @@ var user = {
             let salt = result[0].salt;
 
             var passwordData = sha512(user.password, salt);
-            let sql_password = 'SELECT id FROM users WHERE phone = ? AND passwordHash = ?';
+            let sql_password = 'SELECT id,name,role FROM users WHERE phone = ? AND passwordHash = ?';
             let query_salt = db.query(sql_password, [user.phone, passwordData.passwordHash], (err, result) => {
                 if (err) throw err;
                 if (result.length == 0) {
@@ -48,7 +48,7 @@ var user = {
                         success: true,
                         data: {
                             msg: "user found.",
-                            user_id: result
+                            user: result
                         }
                     }
                     return callback(response);
@@ -59,6 +59,8 @@ var user = {
 
     },
     create: function (user, callback) {
+        console.log(user);
+        
         var salt = genRandomString(16); /** Gives us salt of length 16 */
         var passwordData = sha512(user.password, salt);
 
@@ -67,7 +69,7 @@ var user = {
             phone: user.phone,
             salt: passwordData.salt,
             passwordHash: passwordData.passwordHash,
-            role: "admin"
+            role: user.role
         }
 
         let sql = 'INSERT INTO users SET ?';
