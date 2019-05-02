@@ -26,7 +26,8 @@
 
             <div class="form-group">
               <label for="iname">Item Name:</label>
-              <input type="text" class="form-control" id="newItemName" placeholder="Enter Item Name" name="iname" required>
+              <input type="text" class="form-control" id="newItemName" placeholder="Enter Item Name" name="iname"
+                required>
               <div class="valid-feedback">Valid.</div>
               <div class="invalid-feedback">Please fill out this field.</div>
             </div>
@@ -39,19 +40,18 @@
 
             <div class="form-group">
               <label for="description">Categories:</label>
-              <input type="text" class="form-control" id="newCategory" placeholder="Enter Categories"
-                name="description" required>
+              <input type="text" class="form-control" id="newCategory" placeholder="Enter Categories" name="description"
+                required>
               <div class="valid-feedback">Valid.</div>
               <div class="invalid-feedback">Please Enter Categories Separated by a Comma(",")</div>
             </div>
 
             <div class="form-group">
-                <label for="price">Price:</label>
-                <input type="number" class="form-control" id="newPrice" placeholder="Enter Price"
-                  name="price" required>
-                <div class="valid-feedback">Valid.</div>
-                <div class="invalid-feedback">Please Enter the price of the item.</div>
-              </div>
+              <label for="price">Price:</label>
+              <input type="number" class="form-control" id="newPrice" placeholder="Enter Price" name="price" required>
+              <div class="valid-feedback">Valid.</div>
+              <div class="invalid-feedback">Please Enter the price of the item.</div>
+            </div>
           </form>
         </div>
 
@@ -63,6 +63,9 @@
 
       </div>
     </div>
+  </div>
+
+  <div id="alerts">
   </div>
 
   <table class="table table-hover" id="menu">
@@ -84,7 +87,6 @@
   </table>
   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem">Add Item</button>
   <script>
-
     // Disable form submissions if there are invalid fields
     function validate() {
       'use strict';
@@ -95,14 +97,13 @@
           //event.preventDefault();
           //event.stopPropagation();
           form.classList.add('was-validated');
-        }else{
+        } else {
           $('#addItem').modal('toggle');
           addNewItem();
         }
-        
+
       }, false);
     }
-
     /**
      * jQuery.fn.sortElements
      * --------------
@@ -128,18 +129,12 @@
      *   of the <td> itself.
      */
     jQuery.fn.sortElements = (function () {
-
       var sort = [].sort;
-
       return function (comparator, getSortable) {
-
         getSortable = getSortable || function () { return this; };
-
         var placements = this.map(function () {
-
           var sortElement = getSortable.call(this),
             parentNode = sortElement.parentNode,
-
             // Since the element itself will change position, we have
             // to have some way of storing it's original position in
             // the DOM. The easiest way is to have a 'flag' node:
@@ -147,80 +142,54 @@
               document.createTextNode(''),
               sortElement.nextSibling
             );
-
           return function () {
-
             if (parentNode === this) {
               throw new Error(
                 "You can't sort elements if any one is a descendant of another."
               );
             }
-
             // Insert before flag:
             parentNode.insertBefore(this, nextSibling);
             // Remove flag:
             parentNode.removeChild(nextSibling);
-
           };
-
         });
-
         return sort.call(this, comparator).each(function (i) {
           placements[i].call(getSortable.call(this));
         });
-
       };
-
     })();
-
     $("#dash").on('click', function (event) {
       $("#content-wrapper").load("./dashboard.html");
     });
-
     var table = $('table');
-
     $('#name, #price')
       .wrapInner('<span title="sort according to this column"/>')
       .each(function () {
-
         var th = $(this),
           thIndex = th.index(),
           inverse = false;
-
         th.click(function () {
-
           table.find('td').filter(function () {
-
             return $(this).index() === thIndex;
-
           }).sortElements(function (a, b) {
-
             return $.text([a]) > $.text([b]) ?
               inverse ? -1 : 1
               : inverse ? 1 : -1;
-
           }, function () {
-
             // parentNode is the element we want to move
             return this.parentNode;
-
           });
-
           inverse = !inverse;
-
         });
-
       });
-
     window.onloadend = loaditems();
     function loaditems() {
       var table = $("#menu tbody");
       var category = $("#category-select");
       var cat, categories = [], catCount = 0;
-
       table.find("tr").remove();
       category.find("option:gt(0)").remove();
-
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
         for (var i = 0; i < response.data.items.length; i++) {
@@ -229,7 +198,7 @@
             "<td>" + response.data.items[i].name + "</td>\n" +
             "<td>" + response.data.items[i].description + "</td>\n" +
             "<td>" + response.data.items[i].category + "</td>\n" +
-            "<td>" + response.data.items[i].price + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
+            "<td>" + response.data.items[i].price + "<a href='#' title='Dismissible popover' data-toggle='popover' data-trigger='focus' data-content='Click anywhere in the document to close this popover'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
             "</tr>\n"
           );
           cat = response.data.items[i].category.split(",");
@@ -261,38 +230,52 @@
         }
       });
     }
-
     $(document).ready(function () {
+      $('[data-toggle="popover"]').popover();
       $("#search").on("keyup", function () {
         var value = $(this).val().toLowerCase();
         $("#menu tbody tr").filter(function () {
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
       });
+      $("#category-select").on("change", function () {
+        var value = this.value.toLowerCase();
+        $("#menu tbody tr").filter(function () {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
     });
-
-    function addNewItem(){
+    function addNewItem() {
       var itemName = $("#newItemName").val();
       var itemDescription = $("#newDescription").val();
       var itemCategory = $("#newCategory").val();
       var ItemPrice = $("#newPrice").val();
       /* sample code on how to insert item*/
-    const itemModel = require('./../models/item');
-     var item = {
-       name: itemName,
-       description: itemDescription,
-       price: ItemPrice,
-       category: itemCategory
-     };
-
-     itemModel.create(item, function (response) {
-       console.log(response);
-       loaditems();
-     });
-
+      const itemModel = require('./../models/item');
+      var item = {
+        name: itemName,
+        description: itemDescription,
+        price: ItemPrice,
+        category: itemCategory
+      };
+      itemModel.create(item, function (response) {
+        console.log(response);
+        loaditems();
+        $("#alerts").append("<div class='alert alert-success fade show'><strong>Success!</strong> Item added to menu.</div>");
+        setTimeout(function() { $(".alert").alert('close') }, 2000);
+      });
     }
 
-    /*----------------SAMPLE CODES-------------*/
+    function remove(menuId){
+      const itemModel = require('./../models/item');
+    item = {
+      id: menuId
+    }
+    itemModel.deletebyId(item, function (response) {
+      console.log(response);
+    });
+    }
+      /*----------------SAMPLE CODES-------------*/
     /* sample code on how to insert item*/
     /* const itemModel = require('./../models/item');
      var item = {
@@ -301,17 +284,14 @@
        price: '80',
        category: 'chicken,thali'
      };
-
      itemModel.create(item, function (response) {
        console.log(response);
      });*/
-
     /*--- sample code on get all users*/
     /* const itemModel = require('./../models/item');
      itemModel.getAll(function (response) {
           console.log(response);
       });*/
-
     /*--- sample code on get data by item id*/
     /*const itemModel = require('./../models/item');
     item = {
@@ -320,7 +300,6 @@
     itemModel.getbyId(item, function (response) {
       console.log(response);
     });*/
-
     /*--- sample code to update data by item id*/
     /*const itemModel = require('./../models/item');
     item = {
@@ -334,7 +313,6 @@
     itemModel.update(item, function (response) {
       console.log(response);
     });*/
-
     /*--- sample code to delete user by user id*/
     /*const itemModel = require('./../models/item');
     item = {
@@ -343,11 +321,6 @@
     itemModel.deletebyId(item, function (response) {
       console.log(response);
     });*/
-
-
-
-
-
   </script>
 </div>
 <!-- /.container-fluid -->
