@@ -94,8 +94,12 @@
         if (form.checkValidity() === false) {
           //event.preventDefault();
           //event.stopPropagation();
+          form.classList.add('was-validated');
+        }else{
+          $('#addItem').modal('toggle');
+          addNewItem();
         }
-        form.classList.add('was-validated');
+        
       }, false);
     }
 
@@ -214,6 +218,9 @@
       var category = $("#category-select");
       var cat, categories = [], catCount = 0;
 
+      table.find("tr").remove();
+      category.find("option:gt(0)").remove();
+
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
         for (var i = 0; i < response.data.items.length; i++) {
@@ -263,6 +270,27 @@
         });
       });
     });
+
+    function addNewItem(){
+      var itemName = $("#newItemName").val();
+      var itemDescription = $("#newDescription").val();
+      var itemCategory = $("#newCategory").val();
+      var ItemPrice = $("#newPrice").val();
+      /* sample code on how to insert item*/
+    const itemModel = require('./../models/item');
+     var item = {
+       name: itemName,
+       description: itemDescription,
+       price: ItemPrice,
+       category: itemCategory
+     };
+
+     itemModel.create(item, function (response) {
+       console.log(response);
+       loaditems();
+     });
+
+    }
 
     /*----------------SAMPLE CODES-------------*/
     /* sample code on how to insert item*/
