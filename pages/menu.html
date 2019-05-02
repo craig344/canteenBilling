@@ -5,8 +5,64 @@
   <h1>View and edit menu</h1>
   <hr>
   <p>Here you can view and make changes to your menu</p>
+
   <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Search" id="search">
+  </div>
+
+  <div class="modal" id="addItem">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Add new item to menu</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="/action_page.php" class="needs-validation">
+
+            <div class="form-group">
+              <label for="iname">Item Name:</label>
+              <input type="text" class="form-control" id="newItemName" placeholder="Enter Item Name" name="iname" required>
+              <div class="valid-feedback">Valid.</div>
+              <div class="invalid-feedback">Please fill out this field.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description:</label>
+              <input type="text" class="form-control" id="newDescription" placeholder="Enter Description"
+                name="description">
+            </div>
+
+            <div class="form-group">
+              <label for="description">Categories:</label>
+              <input type="text" class="form-control" id="newCategory" placeholder="Enter Categories"
+                name="description" required>
+              <div class="valid-feedback">Valid.</div>
+              <div class="invalid-feedback">Please Enter Categories Separated by a Comma(",")</div>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" class="form-control" id="newPrice" placeholder="Enter Price"
+                  name="price" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please Enter the price of the item.</div>
+              </div>
+          </form>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" onclick="validate();">Add</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <table class="table table-hover" id="menu">
@@ -26,8 +82,26 @@
 
     </tbody>
   </table>
-  <button type="button" class="btn btn-primary">Add Item</button>
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem">Add Item</button>
   <script>
+
+    // Disable form submissions if there are invalid fields
+    function validate() {
+      'use strict';
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function (form) {
+        if (form.checkValidity() === false) {
+          //event.preventDefault();
+          //event.stopPropagation();
+          form.classList.add('was-validated');
+        }else{
+          $('#addItem').modal('toggle');
+          addNewItem();
+        }
+        
+      }, false);
+    }
 
     /**
      * jQuery.fn.sortElements
@@ -144,6 +218,9 @@
       var category = $("#category-select");
       var cat, categories = [], catCount = 0;
 
+      table.find("tr").remove();
+      category.find("option:gt(0)").remove();
+
       const itemModel = require('./../models/item');
       itemModel.getAll(function (response) {
         for (var i = 0; i < response.data.items.length; i++) {
@@ -177,7 +254,7 @@
             }
           }
         }
-        for(var i = 0; i<catCount; i++){
+        for (var i = 0; i < catCount; i++) {
           category.append(
             "<option value='" + categories[i] + "'>" + categories[i] + "</option>\n"
           );
@@ -192,14 +269,28 @@
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
       });
-
-      $("#category-select").on("change", function () {
-        var value = $(this).val().toLowerCase();
-        $("#menu tbody tr").filter(function () {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
     });
+
+    function addNewItem(){
+      var itemName = $("#newItemName").val();
+      var itemDescription = $("#newDescription").val();
+      var itemCategory = $("#newCategory").val();
+      var ItemPrice = $("#newPrice").val();
+      /* sample code on how to insert item*/
+    const itemModel = require('./../models/item');
+     var item = {
+       name: itemName,
+       description: itemDescription,
+       price: ItemPrice,
+       category: itemCategory
+     };
+
+     itemModel.create(item, function (response) {
+       console.log(response);
+       loaditems();
+     });
+
+    }
 
     /*----------------SAMPLE CODES-------------*/
     /* sample code on how to insert item*/
