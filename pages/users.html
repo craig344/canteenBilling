@@ -8,3 +8,275 @@
       <li class="breadcrumb-item active">Blank Page</li>
   </ol>
 
+  <!-- Page Content -->
+  <h1>Users Page</h1>
+  <hr>
+  <p>This is a great starting point for new custom pages.</p>
+
+  <div class="input-group mb-3">
+
+      <input type="text" class="form-control" placeholder="Search" id="search">
+      <div class="input-group-append">
+        <span class="input-group-text">&#x1F50D;</span>
+      </div>
+    </div>
+
+    <div class="modal" id="adduser">
+      <div class="modal-dialog">
+        <div class="modal-content">
+  
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Add new user</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+  
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form action="/action_page.php" class="needs-validation">
+  
+              <div class="form-group">
+                <label for="iname">User Name:</label>
+                <input type="text" class="form-control" id="newUserName" placeholder="Enter User Name" name="uname" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div>
+              </div>
+  
+              <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="newPassword" placeholder="Enter Password"
+                  name="password">
+              </div>
+  
+              <div class="form-group">
+                <label for="number">Phone:</label>
+                <input type="tel" class="form-control" id="newNumber" placeholder="Enter your Phone Number"
+                  name="number" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please Enter the phone number of the user.</div>
+              </div>
+            </form>
+          </div>
+  
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="validate();">Add</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  
+    <table class="table table-hover" id="user" class="users">
+      <thead>
+        <tr>
+          <th id="name" class="inner">User Name</th>
+          <th id="number" class="inner2">Phone Number</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody>
+  
+      </tbody>
+    </table>
+
+    <div class="modal" id="edituser">
+      <div class="modal-dialog">
+        <div class="modal-content">
+  
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Add new user</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+  
+          <!-- Modal body -->
+          <div class="modal-body">
+            <form action="/action_page.php" class="needs-validation">
+  
+              <div class="form-group">
+                <label for="uname">User Name:</label>
+                <input type="text" class="form-control" id="newUserName" placeholder="Enter User Name" name="uname" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please fill out this field.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="number">Phone:</label>
+                <input type="tel" class="form-control" id="newNumber" placeholder="Enter your Phone Number"
+                  name="number" required>
+                <div class="valid-feedback">Valid.</div>
+                <div class="invalid-feedback">Please Enter the phone number of the user.</div>
+              </div>
+            </form>
+          </div>
+  
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" onclick="validate();">Add</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adduser">Add User</button>
+    <button type="button" class="btn btn-primary_sm" data-toggle="modal" data-target="#edituser">Edit User</button>
+   
+  <script>
+      
+      // Disable form submissions if there are invalid fields
+  function validate() {
+    'use strict';
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function (form) {
+      if (form.checkValidity() === false) {
+        //event.preventDefault();
+        //event.stopPropagation();
+        form.classList.add('was-validated');
+      }else{
+        $('#adduser').modal('toggle');
+        addNewUser();
+      }
+      
+    }, false);
+  }
+
+jQuery.fn.sortElements = (function () {
+
+var sort = [].sort;
+
+return function (comparator, getSortable) {
+
+getSortable = getSortable || function () { return this; };
+
+var placements = this.map(function () {
+
+  var sortElement = getSortable.call(this),
+    parentNode = sortElement.parentNode,
+
+    // Since the element itself will change position, we have
+    // to have some way of storing it's original position in
+    // the DOM. The easiest way is to have a 'flag' node:
+    nextSibling = parentNode.insertBefore(
+      document.createTextNode(''),
+      sortElement.nextSibling
+    );
+
+  return function () {
+
+    if (parentNode === this) {
+      throw new Error(
+        "You can't sort elements if any one is a descendant of another."
+      );
+    }
+
+    // Insert before flag:
+    parentNode.insertBefore(this, nextSibling);
+    // Remove flag:
+    parentNode.removeChild(nextSibling);
+
+  };
+
+});
+
+return sort.call(this, comparator).each(function (i) {
+  placements[i].call(getSortable.call(this));
+});
+
+};
+
+})();
+
+$("#dash").on('click', function (event) {
+$("#content-wrapper").load("./dashboard.html");
+});
+
+var table = $('table');
+
+$('#name, #number')
+.wrapInner('<span title="sort according to this column"/>')
+.each(function () {
+
+var th = $(this),
+  thIndex = th.index(),
+  inverse = false;
+
+th.click(function () {
+
+  table.find('td').filter(function () {
+
+    return $(this).index() === thIndex;
+
+  }).sortElements(function (a, b) {
+
+    return $.text([a]) > $.text([b]) ?
+      inverse ? -1 : 1
+      : inverse ? 1 : -1;
+
+  }, function () {
+
+    // parentNode is the element we want to move
+    return this.parentNode;
+
+  });
+
+  inverse = !inverse;
+
+});
+
+});
+
+window.onloadend = loadusers();
+function loadusers() {
+var table = $("#user tbody");
+
+const userModel = require('./../models/user');
+userModel.getAll(function (response) {
+for (var i = 0; i < response.data.users.length; i++) {
+  table.append(
+    "<tr id = '" + response.data.users[i].id + "'>\n" +
+    "<td>" + response.data.users[i].name + "</td>\n" +
+    //"<td>" + response.data.users[i].passwordHash + "</td>\n" +
+    "<td>" + response.data.users[i].phone + "</td>\n" +
+    "<td>" + response.data.users[i].role + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
+    "</tr>\n"
+  );
+}
+});
+}
+
+$(document).ready(function () {
+$("#search").on("keyup", function () {
+//var value = $(this).val().toLowerCase();
+$("#user tbody tr").filter(function () {
+ // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+});
+});
+});
+
+function addNewUser(){
+    var userName = $("#newUserName").val();
+    var userPassword = $("#newPassword").val();
+    var userNumber = $("#newNumber").val();
+  const userModel = require('./../models/user');
+   var user = {
+     name: userName,
+     password: userPassword,
+     phone: userNumber,
+  };
+
+   userModel.create(user, function (response) {
+     console.log(response);
+     loadusers();
+   });
+
+  }
+
+
+  </script>
+</div>
+<!-- /.container-fluid -->
