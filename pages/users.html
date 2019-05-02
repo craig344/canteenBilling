@@ -20,13 +20,59 @@
           <span class="input-group-text">&#x1F50D;</span>
         </div>
       </div>
+
+      <div class="modal" id="adduser">
+        <div class="modal-dialog">
+          <div class="modal-content">
+    
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Add new user</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+    
+            <!-- Modal body -->
+            <div class="modal-body">
+              <form action="/action_page.php" class="needs-validation">
+    
+                <div class="form-group">
+                  <label for="iname">User Name:</label>
+                  <input type="text" class="form-control" id="newUserName" placeholder="Enter User Name" name="uname" required>
+                  <div class="valid-feedback">Valid.</div>
+                  <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+    
+                <div class="form-group">
+                  <label for="description">Password:</label>
+                  <input type="text" class="form-control" id="newPassword" placeholder="Enter Password"
+                    name="password">
+                </div>
+    
+                <div class="form-group">
+                  <label for="description">Phone Number:</label>
+                  <input type="text" class="form-control" id="newNumber" placeholder="Enter Phone Number"
+                    name="number" required>
+                  <div class="valid-feedback">Valid.</div>
+                  <div class="invalid-feedback">Please Enter Phone Number</div>
+                </div>
+              </form>
+            </div>
+    
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" onclick="validate();">Add</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+    
+          </div>
+        </div>
+      </div>
     
       <table class="table table-hover" id="user">
         <thead>
           <tr>
             <th id="name"><a href="#">User Name</a></th>
-            <th>Password</th>
-            <th>Phone Number</th>
+            <th id="number">Phone Number</th>
             <th>Role</th>
           </tr>
         </thead>
@@ -34,59 +80,27 @@
     
         </tbody>
       </table>
-      <a href="add_user.html" class="btn btn-primary">Add User </a>
 
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adduser">Add User</button>
     <script>
-        console.log("bill script running.....");
-
-        /* sample code on how to insert user*/
-        /* const userModel = require('./../models/user');
-         var user = {
-             name:'user 03',
-             phone: '45678912',
-             password: 'pass12345'
-         };
-
-         userModel.create(user, function (response) {
-            console.log(response);
-         });*/
-
-        /*--- sample code on get all users*/
-        /* const userModel = require('./../models/user');
-         userModel.getAll(function (response) {
-             console.log(response);
-         });*/
-
-        /*--- sample code on get data by user id*/
-        /* const userModel = require('./../models/user');
-         user = {
-             id:'1'
-         }
-         userModel.getbyId(user,function (response) {
-             console.log(response);
-         });*/
-
-        /*--- sample code to update data by user id*/
-        /*const userModel = require('./../models/user');
-         user = {
-             id:'1',
-             name:'up user2',
-             phone:'5556664441',
-             role:'clerk2',
-             password:'admin123'
-         }
-         userModel.update(user,function (response) {
-             console.log(response);
-         });*/
-
-         /*--- sample code to delete user by user id*/
-        /*const userModel = require('./../models/user');
-        user = {
-             id:'1'
-         }
-         userModel.deletebyId(user,function (response) {
-             console.log(response);
-         });*/
+        
+        // Disable form submissions if there are invalid fields
+    function validate() {
+      'use strict';
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function (form) {
+        if (form.checkValidity() === false) {
+          //event.preventDefault();
+          //event.stopPropagation();
+          form.classList.add('was-validated');
+        }else{
+          $('#adduser').modal('toggle');
+          addNewUser();
+        }
+        
+      }, false);
+    }
 
 jQuery.fn.sortElements = (function () {
 
@@ -140,7 +154,7 @@ $("#content-wrapper").load("./dashboard.html");
 
 var table = $('table');
 
-$('#name, #price')
+$('#name, #number')
 .wrapInner('<span title="sort according to this column"/>')
 .each(function () {
 
@@ -183,9 +197,9 @@ userModel.getAll(function (response) {
     table.append(
       "<tr id = '" + response.data.users[i].id + "'>\n" +
       "<td>" + response.data.users[i].name + "</td>\n" +
-      "<td>" + response.data.users[i].passwordHash + "</td>\n" +
+      //"<td>" + response.data.users[i].passwordHash + "</td>\n" +
       "<td>" + response.data.users[i].phone + "</td>\n" +
-      "<td>" + response.data.users[i].role + "</td>\n" +
+      "<td>" + response.data.users[i].role + "<a href='#'><span class=\"badge badge-pill badge-danger float-right\">X</span></a></td>\n" +
       "</tr>\n"
     );
   }
@@ -194,13 +208,30 @@ userModel.getAll(function (response) {
 
 $(document).ready(function () {
 $("#search").on("keyup", function () {
-  var value = $(this).val().toLowerCase();
+  //var value = $(this).val().toLowerCase();
   $("#user tbody tr").filter(function () {
-    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+   // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
   });
 });
 });
 
+function addNewUser(){
+      var userName = $("#newUserName").val();
+      var userPassword = $("#newPassword").val();
+      var userNumber = $("#newNumber").val();
+    const userModel = require('./../models/user');
+     var user = {
+       name: userName,
+       password: userPassword,
+       phone: userNumber,
+    };
+
+     userModel.create(user, function (response) {
+       console.log(response);
+       loadusers();
+     });
+
+    }
 
     </script>
 </div>
