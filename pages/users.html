@@ -43,17 +43,17 @@
                 </div>
     
                 <div class="form-group">
-                  <label for="description">Password:</label>
-                  <input type="text" class="form-control" id="newPassword" placeholder="Enter Password"
+                  <label for="password">Password:</label>
+                  <input type="password" class="form-control" id="newPassword" placeholder="Enter Password"
                     name="password">
                 </div>
     
                 <div class="form-group">
-                  <label for="description">Phone Number:</label>
-                  <input type="text" class="form-control" id="newNumber" placeholder="Enter Phone Number"
+                  <label for="number">Phone:</label>
+                  <input type="tel" class="form-control" id="newNumber" placeholder="Enter your Phone Number"
                     name="number" required>
                   <div class="valid-feedback">Valid.</div>
-                  <div class="invalid-feedback">Please Enter Phone Number</div>
+                  <div class="invalid-feedback">Please Enter the phone number of the user.</div>
                 </div>
               </form>
             </div>
@@ -68,11 +68,11 @@
         </div>
       </div>
     
-      <table class="table table-hover" id="user">
+      <table class="table table-hover" id="user" class="users">
         <thead>
           <tr>
-            <th id="name"><a href="#">User Name</a></th>
-            <th id="number">Phone Number</th>
+            <th id="name" class="inner">User Name</th>
+            <th id="number" class="inner2">Phone Number</th>
             <th>Role</th>
           </tr>
         </thead>
@@ -81,7 +81,50 @@
         </tbody>
       </table>
 
+      <div class="modal" id="edituser">
+        <div class="modal-dialog">
+          <div class="modal-content">
+    
+            <!-- Modal Header -->
+            <div class="modal-header">
+              <h4 class="modal-title">Add new user</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+    
+            <!-- Modal body -->
+            <div class="modal-body">
+              <form action="/action_page.php" class="needs-validation">
+    
+                <div class="form-group">
+                  <label for="uname">User Name:</label>
+                  <input type="text" class="form-control" id="newUserName" placeholder="Enter User Name" name="uname" required>
+                  <div class="valid-feedback">Valid.</div>
+                  <div class="invalid-feedback">Please fill out this field.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="number">Phone:</label>
+                  <input type="tel" class="form-control" id="newNumber" placeholder="Enter your Phone Number"
+                    name="number" required>
+                  <div class="valid-feedback">Valid.</div>
+                  <div class="invalid-feedback">Please Enter the phone number of the user.</div>
+                </div>
+              </form>
+            </div>
+    
+            <!-- Modal footer -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" onclick="validate();">Add</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+    
+          </div>
+        </div>
+      </div>
+
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adduser">Add User</button>
+      <button type="button" class="btn btn-primary_sm" data-toggle="modal" data-target="#edituser">Edit User</button>
+     
     <script>
         
         // Disable form submissions if there are invalid fields
@@ -232,6 +275,7 @@ function addNewUser(){
      });
 
     }
+
 
     </script>
 </div>
