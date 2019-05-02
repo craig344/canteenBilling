@@ -3,6 +3,7 @@
     <!-- Page Content -->
     <h1>History Page</h1>
     <hr>
+
     <div class="row">
         <div class="col-md-4">
             <div class="input-group">
@@ -13,11 +14,6 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-md-4">
             <div class="card" id="order_details_card" style="display: none;">
                 <div class="card-body">
                     <h4 class="card-title">Order Details</h4>
@@ -48,10 +44,78 @@
                 <div class="card-body">Order Not Found</div>
             </div>
         </div>
+        <div class="col-md-8">
+            <table class="table table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Date: <input type="text" id="datepicker"></th>
+                        <th>Item Count</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="ord-list">
+                    <tr>
+                        <td colspan="4">
+                            <div id="spin-loader" class="text-center" style="display:none">
+                                <div class="spinner-border text-dark" role="status" style="width: 3rem; height: 3rem;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-
     <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd",
+                defaultDate: +0
+            });
+        });
+
+        $("#datepicker").on('change', function (event) {
+            $("#ord-list").html('');
+            const orderModel = require('./../models/orders');
+            order = {
+                date: $("#datepicker").val()
+            }
+            orderModel.getbyDate(order, function (response) {
+
+                if (response.success) {
+                    let orders = response.data.item;
+                    orders.forEach(element => {
+                        let tr = document.createElement('tr');
+                        let td_id = document.createElement('td');
+                        let td_date = document.createElement('td');
+                        let td_itemCount = document.createElement('td');
+                        let td_total = document.createElement('td');
+
+                        tr.append(td_id);
+                        tr.append(td_date);
+                        tr.append(td_itemCount);
+                        tr.append(td_total);
+
+                        let d = new Date(element.created_at);
+                        let dateValue = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+
+
+                        td_id.textContent = element.id;
+                        td_date.textContent = dateValue;
+                        td_itemCount.textContent = element.item_count;
+                        td_total.textContent = element.total;
+                        console.log(tr);
+
+                        $("#ord-list").append(tr);
+                    });
+                }
+            });
+
+        });
+
         $("#btn-search").on('click', function (event) {
             $("#order_details_card").hide();
             $("#order_details_error").hide();
@@ -73,8 +137,8 @@
                     $("#data-date").text(dateValue);
                     $("#ord_total").text(orderDetails.total);
 
-                  
-                    
+
+
                     let items = response.data.item;
                     let count = 0;
 
@@ -109,6 +173,8 @@
 
             });
         });
+
+
 
     </script>
 </div>
