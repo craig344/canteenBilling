@@ -104,6 +104,30 @@ var orders = {
                 return callback(response);
             }
         });
+    },
+    getbyDate: function (order, callback) {
+        let sql = 'SELECT * from orders where DATE_FORMAT(`created_at`, "%Y-%m-%d") = ?';
+        let query = db.query(sql, [order.date], (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                let response = {
+                    success: false,
+                    error: {
+                        msg: "No order Found"
+                    }
+                }
+                return callback(response);
+            } else {
+                let response = {
+                    success: true,
+                    data: {
+                        msg: "order found.",
+                        item: result
+                    }
+                }
+                return callback(response);
+            }
+        });
     }
 
 }
