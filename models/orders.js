@@ -128,6 +128,30 @@ var orders = {
                 return callback(response);
             }
         });
+    },
+    getSalesPerDay: function (range, callback) {
+        let sql = "select date(`created_at`) as date,sum(`total`) as sales from orders where date(`created_at`) >= date(?) AND date(`created_at`) <= date(?) group by date(`created_at`);";
+        let query = db.query(sql, [range.startDate,range.endDate], (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                let response = {
+                    success: false,
+                    error: {
+                        msg: "No order Found"
+                    }
+                }
+                return callback(response);
+            } else {
+                let response = {
+                    success: true,
+                    data: {
+                        msg: "order found.",
+                        item: result
+                    }
+                }
+                return callback(response);
+            }
+        });
     }
 
 }

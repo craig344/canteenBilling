@@ -2,11 +2,268 @@
 
     <!-- Page Content -->
     <h1>Reports Page</h1>
-    <hr>
-    <p>This is a great starting point for new custom pages.</p>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#profile" role="tab" id="salesTabLink" data-toggle="tab">Total Sales</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#buzz" role="tab" data-toggle="tab">Item Sales</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade in active show" id="profile">
+            <div class="row">
+                <div class="col-md-8">
+                    <form class="form-inline">
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="startDate" placeholder="Start Date">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="text" class="form-control" id="endDate" placeholder="End Date">
+                        </div>
+                        <button type="button" id="generateChart" class="btn btn-primary mb-2">Generate</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="salesChartCard" class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar"></i>
+                            Total Sales Chart</div>
+                        <div class="card-body">
+                            <canvas id="myBarChart" width="100%" height="50"></canvas>
+                        </div>
+                    </div>
+                    <div class="card bg-danger text-white" id="chart_error" style="display:none;">
+                        <div class="card-body">Chart Data Unavailable, Please check date Range.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane fade" id="buzz">
+            <div class="row">
+                <div class="col-md-8">
+                    <form class="form-inline">
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="startDate_item"
+                            placeholder="Start Date">
+                        <div class="input-group mb-2 mr-sm-2">
+                            <input type="text" class="form-control" id="endDate_item" placeholder="End Date">
+                        </div>
+                        <div class="input-group mb-2 mr-sm-2">
+                            <select class="form-control-sm" id="item_select" name="items">
+                                <option value="0">Category</option>
+                            </select>
+                        </div>
+                        <button type="button" id="generateChart_item" class="btn btn-primary mb-2">Generate</button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div id="salesChartCard_item" class="card mb-3">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar"></i>
+                            Item Sales Chart</div>
+                        <div class="card-body">
+                            <canvas id="myBarChart_item" width="100%" height="50"></canvas>
+                        </div>
+                    </div>
+                    <div class="card bg-danger text-white" id="chart_error_item" style="display:none;">
+                        <div class="card-body">Chart Data Unavailable, Please check date Range.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        console.log("dashboard script running.....");
-        
+        /*-----initialization-------*/
+        $("#startDate,#endDate,#startDate_item,#endDate_item").datepicker({
+            dateFormat: "yy-mm-dd",
+            defaultDate: +0
+        });
+
+        const itemModel = require('./../models/item');
+        itemModel.getAll(function (response) {
+            console.log(response);
+            let items = response.data.items;
+            for (var i = 0; i < items.length; i++) {
+                $("#item_select").append('<option value="' + items[i].id + '">' + items[i].name + '</option>');
+            }
+
+        });
+
+        $("#generateChart").on('click', function (event) {
+            event.preventDefault();
+            $("#chart_error").hide();
+            $("#salesChartCard").hide();
+            const orderModel = require('./../models/orders');
+            let range = {
+                startDate: $("#startDate").val(),
+                endDate: $("#endDate").val()
+            }
+            orderModel.getSalesPerDay(range, function (response) {
+                console.log(response);
+                if (response.success) {
+                    $("#salesChartCard").show();
+                    initializeChart(range, response, "myBarChart", "total");
+                } else {
+                    $("#chart_error").show();
+                }
+            });
+        });
+        $("#generateChart_item").on('click', function (event) {
+            event.preventDefault();
+            $("#chart_error_item").hide();
+            $("#salesChartCard_item").hide();
+            const orderItemModel = require('./../models/order_items');
+            let range = {
+                id: $("#item_select").val(),
+                startDate: $("#startDate_item").val(),
+                endDate: $("#endDate_item").val()
+            }
+            orderItemModel.getSalesPerDay(range, function (response) {
+                console.log(response);
+                if (response.success) {
+                    $("#salesChartCard_item").show();
+                    initializeChart(range, response, "myBarChart_item", "item");
+                } else {
+                    $("#chart_error_item").show();
+                }
+            });
+        });
+        function initializeChart(range, response, chart_id, type) {
+
+
+            //generate all dates in range   
+            let rangeDates = [];
+            let rangeValues = [];
+            let dateIndex = new Date(range.startDate);
+            let dateLimit = new Date(range.endDate);
+            while (dateIndex <= dateLimit) {
+
+                rangeDates.push(GetFormattedDate(dateIndex));
+                rangeValues.push(0);
+
+                dateIndex.setDate(dateIndex.getDate() + 1)
+            }
+
+            //get table data
+            let rData = response.data.item;
+            var maxValue = rData[0].sales;
+            for (var i = 0; i < rangeDates.length; i++) {
+                for (var j = 0; j < rData.length; j++) {
+                    let t = new Date(rData[j].date);
+
+                    if (rangeDates[i] == GetFormattedDate(t)) {
+                        if (type == "total")
+                            rangeValues[i] = rData[j].sales;
+                        else if (type == "item")
+                            rangeValues[i] = rData[j].total_qty;
+
+                        if (rData[j].sales > maxValue) {
+                            maxValue = rangeValues[i];
+                        }
+                    }
+
+                }
+            }
+
+            console.log(rangeValues);
+            let xData = rangeDates;
+            let yData = rangeValues;
+            generateChart(xData, yData, maxValue, chart_id);
+        }
+        function GetFormattedDate(todayTime) {
+
+            var month = todayTime.getMonth() + 1;
+            var day = todayTime.getDate();
+            var year = todayTime.getFullYear();
+            return year + '-' + month + '-' + day;
+        }
+
+        function getFullDate(date) {
+            let dateString = date.getFullYear();
+            let monthString = (date.getMonth() + 1) + '';
+            if (monthString.length == 1)
+                monthString = '0' + monthString;
+
+            let dayString = date.getDate() + '';
+            if (dayString.length == 1)
+                dayString = '0' + dayString;
+            dateString += '-' + monthString;
+            dateString += '-' + dayString;
+            return dateString;
+        }
+
+        function generateChart(xData, yData, maxY, chart_id) {
+            // Bar Chart Example
+            //console.log(chart_id);
+
+            var ctx = document.getElementById(chart_id);
+            var myLineChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: xData,
+                    datasets: [{
+                        label: "Sales",
+                        backgroundColor: "rgba(2,117,216,1)",
+                        borderColor: "rgba(2,117,216,1)",
+                        data: yData,
+                    }],
+                },
+                options: {
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: 'month'
+                            },
+                            gridLines: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 6
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: maxY,
+                                maxTicksLimit: 5
+                            },
+                            gridLines: {
+                                display: true
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
+
+        /*--------chart demo-------*/
+
+        /*const orderModel = require('./../models/orders');
+        let range = {
+            startDate:'2019-05-01',
+            endDate:'2019-05-15'
+        }
+        orderModel.getSalesPerDay(range,function (response) {
+            console.log(response);
+        });*/
+
+        /*const orderItemModel = require('./../models/order_items');
+        let range = {
+            id: 4,
+            startDate: '2019-05-01',
+            endDate: '2019-05-15'
+        }
+        orderItemModel.getSalesPerDay(range, function (response) {
+            console.log(response);
+        });*/
     </script>
 </div>
 <!-- /.container-fluid -->
