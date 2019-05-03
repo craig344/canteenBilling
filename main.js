@@ -12,6 +12,15 @@ let mainWindow;
 let addWindow;
 let dashboardWindow;
 
+
+function createPrintWindow() {
+    //create new window
+    mainWindow = new BrowserWindow({});
+    //Load html into window
+
+   
+}
+
 //Listen for app ready
 app.on('ready', function () {
     createMainWindow();
@@ -55,10 +64,10 @@ function createDashWindow(item) {
     dashboardWindow.maximize();
     dashboardWindow.webContents.on('did-finish-load', () => {
         dashboardWindow.webContents.send('data', item)
-      })
+    })
     //Quit app when closed
     dashboardWindow.on('closed', function () {
-       // app.quit();
+        // app.quit();
     });
     //Garbage collection handle
     dashboardWindow.on('close', function () {
