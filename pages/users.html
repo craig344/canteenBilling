@@ -394,8 +394,33 @@
             console.log(response);
         });*/
 
-      
+        /* sample code on how to insert order ITEMS in BULK*/
+       /* const orderItemModel = require('./../models/order_items');
+        let order_items_arr = [];
+        var order_item1 = {
+            order_id: '1',
+            item_id: '4',
+            quantity: '1',
+            rate: '45'
+        };
+        var order_item2 = {
+            order_id: '1',
+            item_id: '3',
+            quantity: '1',
+            rate: '50'
+        };
+        order_items_arr.push(order_item1);
+        order_items_arr.push(order_item2);
+        orderItemModel.createMultiple(order_items_arr, function (response) {
+            console.log(response);
+        });*/
+         /*--- sample code on get all orders*/
+        /*const orderModel = require('./../models/orders');
+        orderModel.getAll(function (response) {
+            console.log(response);
+        });*/
 
+   
   </script>
 </div>
 <!-- /.container-fluid -->
