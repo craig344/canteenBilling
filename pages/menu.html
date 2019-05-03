@@ -85,7 +85,7 @@
 
         <!-- Modal footer -->
         <div class="modal-footer" id="delFooter">
-          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="clearDel();">Don't Delete</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Don't Delete</button>
         </div>
 
       </div>
@@ -288,6 +288,8 @@
     }
 
     function confirmRemove(rid) {
+      $("#rmSpan").remove();
+      $("#rmButton").remove();
       const itemModel = require('./../models/item');
       item = {
         id: rid
@@ -313,11 +315,6 @@
         $("#alerts").append("<div class='alert alert-success fade show'><strong>Success!</strong> Item deleted from menu.</div>");
         setTimeout(function () { $(".alert").alert('close') }, 2000);
       });
-    }
-
-    function clearDel() {
-      $("#rmSpan").remove();
-      $("#rmButton").remove();
     }
       /*----------------SAMPLE CODES-------------*/
     /* sample code on how to insert item*/
