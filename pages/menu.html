@@ -98,11 +98,12 @@
         <th id="name"><a href="#">Item Name</a></th>
         <th>Description</th>
         <th>
-          <select class="form-control-sm" id="category-select" name="category">
+          <select class="form-control" id="category-select" name="category">
             <option value="">Category</option>
           </select>
         </th>
         <th id="price"><a href="#">Price</a></th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
@@ -221,10 +222,10 @@
             "<td>" + response.data.items[i].name + "</td>\n" +
             "<td>" + response.data.items[i].description + "</td>\n" +
             "<td>" + response.data.items[i].category + "</td>\n" +
-            "<td>" + response.data.items[i].price + "<button type=\"button\" onClick=\"confirmRemove(" + response.data.items[i].id +");\"class=\"btn btn-outline-danger btn-sm float-right\"><span class=\"badge badge-pill badge-danger\">X</span></button></td>\n" +
+            "<td>" + response.data.items[i].price + "</td>\n" +
+            "<td><button type=\"button\" onClick=\"confirmRemove(" + response.data.items[i].id + ");\"class=\"btn btn-outline-danger btn-sm float-right\"><span class=\"badge badge-pill badge-danger\">X</span></button></td>"+
             "</tr>\n"
           );
-          $('[data-toggle="popover"]').popover();
           cat = response.data.items[i].category.split(",");
           if (catCount == 0) {
             for (var j = 0; j < cat.length; j++) {
@@ -291,16 +292,16 @@
 
     function confirmRemove(rid) {
       const itemModel = require('./../models/item');
-    item = {
-      id: rid
-    }
-    itemModel.getbyId(item, function (response) {
+      item = {
+        id: rid
+      }
+      itemModel.getbyId(item, function (response) {
 
-      $("#delBody").append("<span id = 'rmSpan'>"+response.data.item[0].name+"</span>");
+        $("#delBody").append("<span id = 'rmSpan'>" + response.data.item[0].name + "</span>");
 
-    });
+      });
       $('#confirmDelete').modal('toggle');
-      $("#delFooter").append("<button id='rmButton' type=\"button\" class=\"btn btn-danger\" onClick='remove("+rid+");'>Delete</button>")
+      $("#delFooter").append("<button id='rmButton' type=\"button\" class=\"btn btn-danger\" onClick='remove(" + rid + ");'>Delete</button>")
     }
 
     function remove(menuId) {
@@ -317,7 +318,7 @@
       });
     }
 
-    function clearDel(){
+    function clearDel() {
       $("#rmSpan").remove();
       $("#rmButton").remove();
     }

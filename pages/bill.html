@@ -95,14 +95,34 @@
       <tr>
         <th id="name"><a href="#">Item Name</a></th>
         <th id="price"><a href="#">Price</a></th>
+        <th>Quantity</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
 
     </tbody>
   </table>
-  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem">Add Item</button>
-    <script>
+  <script>
+
+window.onloadend = loaditems();
+    function loaditems() {
+      var table = $("#menu tbody");
+      table.find("tr").remove();
+      const itemModel = require('./../models/item');
+      itemModel.getAll(function (response) {
+        for (var i = 0; i < response.data.items.length; i++) {
+          table.append(
+            "<tr id = '" + response.data.items[i].id + "'>\n" +
+            "<td>" + response.data.items[i].name + "</td>\n" +
+            "<td>" + response.data.items[i].price + "</td>\n" +
+            "<td><div class='input-group input-group-sm'><input type='number' class='form-control' value='1'></div></td>"+
+            "<td><button type=\"button\" class=\"btn btn-primary btn-sm float-right\">Add</button></td>"+
+            "</tr>\n"
+          );
+        }
+      });
+    }
 
         /*----------------SAMPLE CODES-------------*/
         /* sample code on how to insert order*/
