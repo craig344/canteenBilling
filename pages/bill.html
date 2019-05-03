@@ -25,6 +25,8 @@
     </div>
     <div class="col-6">
         <p>Your bill:</p>
+        <div id="alerts">
+          </div>
           <table class="table table-hover" id="bill">
             <thead>
               <tr>
@@ -130,6 +132,13 @@ window.onloadend = loaditems();
         });
           }
         })
+        window.print();
+        $("#alerts").append("<div class='alert alert-success fade show'><strong>Success!</strong> Bill Successfully Generated</div>");
+        setTimeout(function () { $(".alert").alert('close') }, 2000);
+        billArr=[];
+        arrCount = 0;
+        displayBill();
+
     }
 
     /**
