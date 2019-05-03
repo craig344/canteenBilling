@@ -220,7 +220,7 @@
             "<td>" + response.data.items[i].description + "</td>\n" +
             "<td>" + response.data.items[i].category + "</td>\n" +
             "<td>" + response.data.items[i].price + "</td>\n" +
-            "<td><button type=\"button\" onClick=\"confirmRemove(" + response.data.items[i].id + ");\"class=\"btn btn-outline-danger btn-sm float-right\"><span class=\"badge badge-pill badge-danger\">X</span></button></td>"+
+            "<td><button type=\"button\" onClick=\"confirmRemove(" + response.data.items[i].id + ");\"class=\"btn btn-danger btn-sm float-right\">&Cross;</button></td>"+
             "</tr>\n"
           );
           cat = response.data.items[i].category.split(",");
