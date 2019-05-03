@@ -56,7 +56,7 @@ window.onloadend = loaditems();
             "<tr id = '" + response.data.items[i].id + "'>\n" +
             "<td>" + response.data.items[i].name + "</td>\n" +
             "<td>" + response.data.items[i].price + "</td>\n" +
-            "<td><div class='input-group input-group-sm'><input type='number' class='form-control' value='1'></div></td>"+
+            "<td><div class='input-group input-group-sm'><input type='number' class='form-control' value='1' id='num"+response.data.items[i].id+"'></div></td>"+
             "<td><button type=\"button\" class=\"btn btn-primary btn-sm float-right\" onClick='addItem("+response.data.items[i].id+")'>&plus;</button></td>"+
             "</tr>\n"
           );
@@ -64,10 +64,29 @@ window.onloadend = loaditems();
       });
     }
 
+    function item(id,name, price, qty) {
+      this.id = id;
+      this.name = name;
+      this.price = price;
+      this.qty = qty;
+    }
+
     function addItem(itemId){
       var row = $("#"+itemId);
-      var bill = $("#bill tbody");
-      console.log(row[0].cells[0].outerText);
+      var billBody = $("#bill tbody");
+      var name = row[0].cells[0].outerText;
+      var price = row[0].cells[1].outerText;
+      var quantity = $("#num"+itemId).val();
+      for(var i=0;i<arrCount;i++){
+        if(billArr[i].id == itemId){
+          billArr[i].qty += parseInt(quantity);
+          break; 
+        }
+        
+      }
+      billArr[arrCount++] = new item(itemId,name,price,parseInt(quantity));
+      console.log(billArr[0].name,billArr[0].qty);
+
     }
 
     /**
