@@ -31,6 +31,7 @@
                 <th id="name"><a href="#">Item Name</a></th>
                 <th id="price"><a href="#">Price</a></th>
                 <th>Quantity</th>
+                <th>Total</th>
                 <th></th>
               </tr>
             </thead>
@@ -38,7 +39,7 @@
         
             </tbody>
           </table>
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItem">Generate Bill</button>
+          <button type="button" class="btn btn-primary" onclick="generateBill();">Generate Bill</button>
     </div>
       
   </div> 
@@ -56,7 +57,7 @@ window.onloadend = loaditems();
             "<tr id = '" + response.data.items[i].id + "'>\n" +
             "<td>" + response.data.items[i].name + "</td>\n" +
             "<td>" + response.data.items[i].price + "</td>\n" +
-            "<td><div class='input-group input-group-sm'><input type='number' class='form-control' value='1'></div></td>"+
+            "<td><div class='input-group input-group-sm'><input type='number' class='form-control' value='1' id='num"+response.data.items[i].id+"'></div></td>"+
             "<td><button type=\"button\" class=\"btn btn-primary btn-sm float-right\" onClick='addItem("+response.data.items[i].id+")'>&plus;</button></td>"+
             "</tr>\n"
           );
@@ -64,10 +65,71 @@ window.onloadend = loaditems();
       });
     }
 
+    function item(id,name, price, qty) {
+      this.id = id;
+      this.name = name;
+      this.price = price;
+      this.qty = qty;
+    }
+
     function addItem(itemId){
       var row = $("#"+itemId);
-      var bill = $("#bill tbody");
-      console.log(row[0].cells[0].outerText);
+      var name = row[0].cells[0].outerText;
+      var price = row[0].cells[1].outerText;
+      var quantity = $("#num"+itemId).val();
+      for(var i=0;i<arrCount;i++){
+        if(billArr[i].id == itemId){
+          billArr[i].qty += parseInt(quantity);
+          displayBill();
+          return; 
+        } 
+      }
+      billArr[arrCount++] = new item(itemId,name,price,parseInt(quantity));
+      displayBill();
+
+    }
+
+    function displayBill(){
+      var billBody = $("#bill tbody");
+      billBody.find("tr").remove();
+      for(var i = 0; i<billArr.length; i++){
+        let total = parseInt(billArr[i].price)*billArr[i].qty;
+        billBody.append(
+          "<tr><td>"+billArr[i].name+"</td>"+
+          "<td>"+billArr[i].price+"</td>"+
+          "<td>"+billArr[i].qty+"</td>"+
+          "<td>"+total+"</td></tr>"
+        );
+      }
+    }
+
+    function generateBill(){
+      var total = 0,itemCount = 0;
+      for(var i = 0; i<billArr.length; i++){
+        total+=parseInt(billArr[i].price)*billArr[i].qty;
+        itemCount+=billArr[i].qty;
+      }
+      const orderModel = require('./../models/orders');
+        var order = {
+         total: total,
+         item_count:itemCount
+        };
+   
+        orderModel.create(order, function (response) {
+          var id = response.data.order_id;
+          for(var i = 0; i<billArr.length; i++){
+            const orderItemModel = require('./../models/order_items');
+            var order_item = {
+            order_id: id,
+            item_id: billArr[i].id,
+            quantity: billArr[i].qty,
+            rate: billArr[i].price
+        };
+        orderItemModel.create(order_item, function (response) {
+            console.log(response);
+        });
+          }
+        })
     }
 
     /**
