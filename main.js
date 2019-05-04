@@ -6,7 +6,7 @@ const user = require('./models/user.js');
 const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 //set environment
-process.env.NODE_ENV = 'development';
+process.env.NODE_ENV = 'production';
 
 let mainWindow;
 let addWindow;
